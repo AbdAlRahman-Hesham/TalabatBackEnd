@@ -12,6 +12,7 @@ using E_Commerce.Repository.Reprositories;
 using E_Commerce.Repository.Reprositories_Interfaces;
 using E_Commerce.Repository.UnitOfWork;
 using E_Commerce.Services.AuthServices;
+using E_Commerce.Services.CacheServices;
 using E_Commerce.Services.OrderServices;
 using E_Commerce.Services.PaymentServices;
 using E_Commerce.Services.ProductServices;
@@ -39,6 +40,7 @@ public static class ApplicationServicesExtension
         service.AddScoped<IOrderServices, OrderServices>();
         service.AddScoped<IProductServices, ProductServices>();
         service.AddTransient<IPaymentServices, PaymentServices>();
+        service.AddScoped<ICacheResponseService, CacheResponseService>();
         service.AddTransient<ExceptionHandlingMiddleware>();
         service.RegisterMapsterConfigurtion();
         return service;

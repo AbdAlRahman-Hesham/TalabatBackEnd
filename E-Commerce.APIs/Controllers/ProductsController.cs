@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domain.Entities;
+﻿using E_Commerce.APIs.Attributes;
+using E_Commerce.Domain.Entities;
 using E_Commerce.DTOs.ErrorResponse;
 using E_Commerce.DTOs.ProductDTOs;
 using E_Commerce.Services.ProductServices;
@@ -16,6 +17,7 @@ public class ProductsController(IProductServices productServices) : BaseApiContr
 
 
     // GET: api/Products/brand
+    [Cached(600)]
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
     {
@@ -25,6 +27,7 @@ public class ProductsController(IProductServices productServices) : BaseApiContr
     }
 
     // GET: api/Products/categories
+    [Cached(600)]
     [HttpGet("categories")]
     public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetCategories()
     {
@@ -34,6 +37,7 @@ public class ProductsController(IProductServices productServices) : BaseApiContr
     }
 
     // GET: api/Products
+    [Cached(300)]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecParams productSpec)
     {
@@ -45,6 +49,7 @@ public class ProductsController(IProductServices productServices) : BaseApiContr
 
 
     // GET: api/Products/5
+    [Cached(300)]
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
