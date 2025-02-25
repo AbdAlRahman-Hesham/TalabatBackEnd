@@ -12,7 +12,7 @@ public class GenaricRepository<T>(StoreContext db) : IGenaricRepository<T> where
     private protected readonly StoreContext _db = db;
 
     public async Task<T?> GetAsync(int id)=> await _db.Set<T>().FindAsync(id);
-    public async Task<T?> GetAsyncWithSpecification(int id, Specification<T> specification)
+    public async Task<T?> GetAsyncWithSpecification(Specification<T> specification)
             => await _db.Set<T>().GetQuery<T>(specification).FirstOrDefaultAsync();
 
     public async Task<IReadOnlyList<T>> GetAllAsync()=> await _db.Set<T>().ToListAsync();
@@ -25,4 +25,11 @@ public class GenaricRepository<T>(StoreContext db) : IGenaricRepository<T> where
             return await _db.Set<T>().CountAsync();
         return await _db.Set<T>().Where(Criteria).CountAsync();
     }
+
+    public async Task AddAsync(T entity) => await _db.AddAsync(entity);
+
+    public void Update(T entity) =>  _db.Update(entity);
+
+
+    public void Delete(T entity) => _db.Remove(entity);
 }

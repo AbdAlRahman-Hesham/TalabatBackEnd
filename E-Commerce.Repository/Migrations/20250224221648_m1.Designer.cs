@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce.Repository.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20250222122302_m2")]
-    partial class m2
+    [Migration("20250224221648_m1")]
+    partial class m1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace E_Commerce.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DeliveryMethodId")
+                    b.Property<int?>("DeliveryMethodId")
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("OrderDate")
@@ -87,6 +87,40 @@ namespace E_Commerce.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DeliveryMethods");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Cost = 10m,
+                            DeliveryTime = "1-2 Days",
+                            Description = "Fastest delivery time",
+                            ShortName = "UPS1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Cost = 5m,
+                            DeliveryTime = "2-5 Days",
+                            Description = "Get it within 5 days",
+                            ShortName = "UPS2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Cost = 2m,
+                            DeliveryTime = "5-10 Days",
+                            Description = "Slower but cheap",
+                            ShortName = "UPS3"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Cost = 0m,
+                            DeliveryTime = "1-2 Weeks",
+                            Description = "Free! You get what you pay for",
+                            ShortName = "FREE"
+                        });
                 });
 
             modelBuilder.Entity("E_Commerce.Domain.Entities.OrderEntities.OrderItem", b =>
@@ -454,8 +488,7 @@ namespace E_Commerce.Repository.Migrations
                     b.HasOne("E_Commerce.Domain.Entities.OrderEntities.DeliveryMethod", "DeliveryMethod")
                         .WithMany()
                         .HasForeignKey("DeliveryMethodId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.OwnsOne("E_Commerce.Domain.Entities.OrderEntities.Address", "ShippingAddress", b1 =>
                         {
@@ -470,11 +503,11 @@ namespace E_Commerce.Repository.Migrations
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("FName")
+                            b1.Property<string>("FirstName")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("LName")
+                            b1.Property<string>("LastName")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 

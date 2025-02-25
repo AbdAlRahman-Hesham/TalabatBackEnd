@@ -34,7 +34,7 @@ namespace E_Commerce.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DeliveryMethodId")
+                    b.Property<int?>("DeliveryMethodId")
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("OrderDate")
@@ -485,8 +485,7 @@ namespace E_Commerce.Repository.Migrations
                     b.HasOne("E_Commerce.Domain.Entities.OrderEntities.DeliveryMethod", "DeliveryMethod")
                         .WithMany()
                         .HasForeignKey("DeliveryMethodId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.OwnsOne("E_Commerce.Domain.Entities.OrderEntities.Address", "ShippingAddress", b1 =>
                         {
@@ -501,11 +500,11 @@ namespace E_Commerce.Repository.Migrations
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("FName")
+                            b1.Property<string>("FirstName")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("LName")
+                            b1.Property<string>("LastName")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 

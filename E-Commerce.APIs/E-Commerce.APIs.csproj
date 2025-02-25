@@ -23,6 +23,7 @@
     <ProjectReference Include="..\E-Commerce.DTOs\E-Commerce.DTOs.csproj" />
     <ProjectReference Include="..\E-Commerce.HELPERs\E-Commerce.HELPERs.csproj" />
     <ProjectReference Include="..\E-Commerce.Repository\E-Commerce.Repository.csproj" />
+    <ProjectReference Include="..\E-Commerce.Services\E-Commerce.Service.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,28 +1,25 @@
 ﻿using E_Commerce.Domain.Entities;
 using E_Commerce.DTOs.ErrorResponse;
-using E_Commerce.DTOs.Pagination;
 using E_Commerce.DTOs.ProductDTOs;
-using E_Commerce.Repository.Reprositories_Interfaces;
-using E_Commerce.Repository.Specifications;
+using E_Commerce.Services.ProductServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace E_Commerce.APIs.Controllers;
 
-
-public class ProductsController(IGenaricRepository<Product> productRepository,
-    IGenaricRepository<ProductBrand> productBrandRepository, IGenaricRepository<ProductCategory> productCategoryRepository) : BaseApiController
+[Authorize]
+public class ProductsController(IProductServices productServices) : BaseApiController
 {
-    private readonly IGenaricRepository<Product> _productRepository = productRepository;
-    private readonly IGenaricRepository<ProductBrand> _productBrandRepository = productBrandRepository;
-    private readonly IGenaricRepository<ProductCategory> _productCategoryRepository = productCategoryRepository;
+    private readonly IProductServices _productServices = productServices;
+
 
 
     // GET: api/Products/brand
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
     {
-        var result = await _productBrandRepository.GetAllAsync();
+        var result = await _productServices.GetBrandsAsync();
 
         return Ok(result);
     }
@@ -31,7 +28,7 @@ public class ProductsController(IGenaricRepository<Product> productRepository,
     [HttpGet("categories")]
     public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetCategories()
     {
-        var result = await _productCategoryRepository.GetAllAsync();
+        var result = await _productServices.GetCategoriesAsync();
 
         return Ok(result);
     }
@@ -42,11 +39,8 @@ public class ProductsController(IGenaricRepository<Product> productRepository,
     {
         
 
-        var specification = new ProductSpecification();
-        specification = ProductSpecification.BuildProductSpecfication(productSpec);
-        var result = await _productRepository.GetAllAsyncWithSpecification(specification);
-        int count = await _productRepository.GetCountAsync(specification.Criteria);
-        return Ok(new Pagination<Product>(productSpec.PageSize!.Value, productSpec.PageIndex!.Value, count, result));
+        var result = await _productServices.GetProductsWithPaginationAsync(productSpec);
+        return Ok(result);
     }
 
 
@@ -54,7 +48,7 @@ public class ProductsController(IGenaricRepository<Product> productRepository,
     [HttpGet("{id}")]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
-        var product = await _productRepository.GetAsync(id);
+        var product = await _productServices.GetProductAsync(id);
 
         if (product == null)
         {

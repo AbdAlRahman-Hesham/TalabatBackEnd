@@ -3,7 +3,6 @@ using E_Commerce.DTOs.ProductDTOs;
 using Microsoft.Data.SqlClient;
 using System.Linq.Expressions;
 
-
 namespace E_Commerce.Repository.Specifications;
 
 public class ProductSpecification : Specification<Product>

@@ -94,12 +94,12 @@ namespace E_Commerce.Repository.Migrations
                     BuyerEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrderDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShippingAddress_FName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShippingAddress_LName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeliveryMethodId = table.Column<int?>(type: "int", nullable: true),
+                    DeliveryMethodId = table.Column<int>(type: "int", nullable: true),
                     Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentIntentId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -164,6 +164,17 @@ namespace E_Commerce.Repository.Migrations
                     { 6, "Cake" },
                     { 7, "Donuts" },
                     { 8, "Salad" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "DeliveryMethods",
+                columns: new[] { "Id", "Cost", "DeliveryTime", "Description", "ShortName" },
+                values: new object[,]
+                {
+                    { 1, 10m, "1-2 Days", "Fastest delivery time", "UPS1" },
+                    { 2, 5m, "2-5 Days", "Get it within 5 days", "UPS2" },
+                    { 3, 2m, "5-10 Days", "Slower but cheap", "UPS3" },
+                    { 4, 0m, "1-2 Weeks", "Free! You get what you pay for", "FREE" }
                 });
 
             migrationBuilder.InsertData(

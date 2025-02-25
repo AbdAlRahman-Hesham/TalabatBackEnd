@@ -20,7 +20,7 @@ public class Order:BaseEntity
     public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
     public Address ShippingAddress { get; set; }
-    public DeliveryMethod DeliveryMethod { get; set; }
+    public DeliveryMethod? DeliveryMethod { get; set; }
     public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
     public decimal Subtotal { get; set; }
     [NotMapped]

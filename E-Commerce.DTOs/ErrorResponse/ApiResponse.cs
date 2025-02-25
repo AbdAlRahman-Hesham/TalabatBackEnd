@@ -5,10 +5,15 @@ public class ApiResponse
     public int StatusCode { get; set; }
     public string ErrorMessage { get; set; }
 
-    public ApiResponse(int statusCode, string? errorMessage = null)
+    public ApiResponse(int statusCode, string errorMessage)
     {
         StatusCode = statusCode;
-        ErrorMessage = errorMessage ?? GetDefaultMessageForStatusCode(statusCode);
+        ErrorMessage = errorMessage;
+    }
+    public ApiResponse(int statusCode)
+    {
+        StatusCode = statusCode;
+        ErrorMessage = GetDefaultMessageForStatusCode(statusCode);
     }
 
 

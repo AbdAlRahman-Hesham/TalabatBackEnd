@@ -1,16 +1,18 @@
-﻿namespace E_Commerce.Domain.Entities.Identity;
+﻿
+using System.ComponentModel.DataAnnotations;
 
-public class UserAddress
+namespace E_Commerce.DTOs.OrderDtos;
+
+public class AddressDto
 {
-    public int Id { get; set; }
+    [Required]
     public string FirstName { get; set; }
+    [Required]
     public string LastName { get; set; }
+    [Required]
     public string Street { get; set; }
+    [Required]
     public string City { get; set; }
+    [Required]
     public string Country { get; set; }
-
-    public string AppUserId { get; set; }
-
-
-
 }
