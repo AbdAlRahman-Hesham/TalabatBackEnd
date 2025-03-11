@@ -40,7 +40,7 @@ public class AccountsController(UserManager<AppUser> userManager, SignInManager<
 
     }
     [HttpPost("Register")]
-    [ProducesResponseType(typeof(UserAddressDto), 200)]
+    [ProducesResponseType(typeof(UserDto), 200)]
     [ProducesResponseType(typeof(ApiValidationResponse), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ApiResponse), 400)]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
@@ -87,14 +87,14 @@ public class AccountsController(UserManager<AppUser> userManager, SignInManager<
     [Authorize]
     [HttpGet("address")]
     [ProducesResponseType(typeof(UserAddressDto), 200)]
-    [ProducesResponseType(typeof(ApiResponse), 200)]
+    [ProducesResponseType(typeof(ApiResponse), 400)]
     public async Task<ActionResult<UserAddressDto>> GetUserAddress()
     {
         var email = User.FindFirst(ClaimTypes.Email)!.Value;
         var user = await _userManager.GetUserWithAddressAsync(email);
         UserAddressDto userAddressDto = user!.Address.Adapt<UserAddressDto>();
         if(userAddressDto is null)
-            return Ok(new ApiResponse(200,"The user have no address registered"));
+            return BadRequest(new ApiResponse(400,"The user have no address registered"));
         return Ok(userAddressDto);
 
     }

@@ -1,15 +1,16 @@
 ﻿using E_Commerce.APIs.Attributes;
 using E_Commerce.Domain.Entities;
 using E_Commerce.DTOs.ErrorResponse;
+using E_Commerce.DTOs.Pagination;
 using E_Commerce.DTOs.ProductDTOs;
 using E_Commerce.Services.ProductServices;
-using Microsoft.AspNetCore.Authorization;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace E_Commerce.APIs.Controllers;
 
-[Authorize]
+//[Authorize]
 public class ProductsController(IProductServices productServices) : BaseApiController
 {
     private readonly IProductServices _productServices = productServices;
@@ -39,20 +40,29 @@ public class ProductsController(IProductServices productServices) : BaseApiContr
     // GET: api/Products
     [Cached(300)]
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecParams productSpec)
+    public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductSpecParams productSpec)
     {
-        
-
         var result = await _productServices.GetProductsWithPaginationAsync(productSpec);
-        return Ok(result);
+        var returnResult = new Pagination<ProductToReturnDto>(result.PageSize, result.PageIndex, result.Count, result.Data.Adapt<ICollection<ProductToReturnDto>>());
+        return Ok(returnResult);
+    }
+    // GET: api/Products
+    [Cached(600)]
+    [HttpGet("featuredproducts")]
+    public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetFeaturedProducts()
+    {
+        var result = await _productServices.GetFeaturedProductsAsync();
+        var returnResult = result.Adapt<ICollection<ProductToReturnDto>>();
+        return Ok(returnResult);
     }
 
 
     // GET: api/Products/5
     [Cached(300)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Product>> GetProduct(int id)
+    public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
     {
+
         var product = await _productServices.GetProductAsync(id);
 
         if (product == null)
@@ -60,68 +70,77 @@ public class ProductsController(IProductServices productServices) : BaseApiContr
             return NotFound(new ApiResponse((int)HttpStatusCode.NotFound, "The product not found"));
         }
 
-        return Ok(product);
+        return Ok(product.Adapt<ProductToReturnDto>());
     }
 
 
 
-    /*// PUT: api/Products/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int id, Product product)
+    // POST: api/Products
+    [HttpPost]
+    public async Task<ActionResult<ProductToReturnDto>> PostProduct(ProductCreateDto productDto)
     {
-        if (id != product.Id)
+        if (productDto == null)
         {
-            return BadRequest();
+            return BadRequest(new ApiResponse((int)HttpStatusCode.BadRequest, "Invalid product data"));
         }
 
-        _context.Entry(product).State = EntityState.Modified;
+        var product = productDto.Adapt<Product>();
 
-        try
+        var createdProduct = await _productServices.CreateProductAsync(product);
+        if (createdProduct == null)
         {
-            await _context.SaveChangesAsync();
+            return BadRequest(new ApiResponse((int)HttpStatusCode.BadRequest, "Failed to create product"));
         }
-        catch (DbUpdateConcurrencyException)
+
+        var result = createdProduct.Adapt<ProductToReturnDto>();
+
+        return CreatedAtAction(nameof(GetProduct), new { id = result.Id }, result);
+    }
+
+    // PUT: api/Products/5
+    [HttpPut("put/{id}")]
+    public async Task<IActionResult> PutProduct(int id, [FromBody] ProductCreateDto productDto)
+    {
+        if (productDto == null)
         {
-            if (!ProductExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            return BadRequest(new ApiResponse((int)HttpStatusCode.BadRequest, "Invalid product data"));
+        }
+
+        var existingProduct = await _productServices.GetProductAsync(id);
+        if (existingProduct == null)
+        {
+            return NotFound(new ApiResponse((int)HttpStatusCode.NotFound, "The product not found"));
+        }
+
+        var product = productDto.Adapt<Product>();
+        product.Id = id;
+
+        var result = await _productServices.UpdateProductAsync(product);
+        if (!result)
+        {
+            return BadRequest(new ApiResponse((int)HttpStatusCode.BadRequest, "Failed to update product"));
         }
 
         return NoContent();
     }
-
-    // POST: api/Products
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPost]
-    public async Task<ActionResult<Product>> PostProduct(Product product)
-    {
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction("GetProduct", new { id = product.Id }, product);
-    }
-
     // DELETE: api/Products/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
-        var product = await _context.Products.FindAsync(id);
+        var product = await _productServices.GetProductAsync(id);
         if (product == null)
         {
-            return NotFound();
+            return NotFound(new ApiResponse((int)HttpStatusCode.NotFound, "The product not found"));
         }
 
-        _context.Products.Remove(product);
-        await _context.SaveChangesAsync();
+        var result = await _productServices.DeleteProductAsync(id);
+        if (!result)
+        {
+            return BadRequest(new ApiResponse((int)HttpStatusCode.BadRequest, "Failed to delete product"));
+        }
 
         return NoContent();
-    }*/
+    }
 
 
 }

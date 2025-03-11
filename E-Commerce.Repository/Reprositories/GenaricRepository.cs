@@ -18,6 +18,8 @@ public class GenaricRepository<T>(StoreContext db) : IGenaricRepository<T> where
     public async Task<IReadOnlyList<T>> GetAllAsync()=> await _db.Set<T>().ToListAsync();
     public async Task<IReadOnlyList<T>> GetAllAsyncWithSpecification(Specification<T> specification) => 
         await _db.Set<T>().GetQuery<T>(specification).ToListAsync();
+    public async Task<ICollection<T>> GetCollectionOfAllAsyncWithSpecification(Specification<T> specification) => 
+        await _db.Set<T>().GetQuery<T>(specification).ToListAsync();
 
     public async Task<int> GetCountAsync(Expression<Func<T, bool>>? Criteria)
     {

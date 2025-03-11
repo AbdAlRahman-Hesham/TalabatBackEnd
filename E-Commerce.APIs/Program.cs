@@ -11,6 +11,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -28,7 +29,14 @@ await app.UseSeeding();
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
-app.UseStaticFiles();
+//app.UseStaticFiles();
+app.UseCors(op =>
+{
+    op.WithOrigins("http://localhost:4200")
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials();
+});
 
 app.UseHttpsRedirection();
 
@@ -36,4 +44,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.StartRedisServer();
 app.Run();

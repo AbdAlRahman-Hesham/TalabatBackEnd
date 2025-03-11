@@ -57,6 +57,7 @@ public class OrderServices(IBasketRepository basketRepository, IUnitOfWork unitO
 
         // 5. Create Order
         var order = new Order(buyerEmail, shippingAddress, deliveryMethod, itemOrdereds, subtotal);
+        order.PaymentIntentId = basket.PaymentIntentId!;
         await _orderRepository.AddAsync(order);
         // 6. Save to database
         var result = await _unitOfWork.CompleteAsync();

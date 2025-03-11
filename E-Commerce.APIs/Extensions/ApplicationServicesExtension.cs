@@ -6,6 +6,7 @@ using E_Commerce.Domain.ServicesInterfaces;
 using E_Commerce.DTOs.BasketDTOs;
 using E_Commerce.DTOs.ErrorResponse;
 using E_Commerce.DTOs.OrderDtos;
+using E_Commerce.DTOs.ProductDTOs;
 using E_Commerce.Repository.Data;
 using E_Commerce.Repository.Identity;
 using E_Commerce.Repository.Reprositories;
@@ -23,6 +24,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
@@ -145,9 +147,15 @@ public static class ApplicationServicesExtension
          {
              Items = src.Items.Adapt<List<BasketItem>>() 
          });
+
         TypeAdapterConfig<BasketItemDto, BasketItem>
             .NewConfig().Map(dest => dest.Id, src => src.Id!.Value);
 
+        TypeAdapterConfig<Product, ProductToReturnDto>.NewConfig()
+            .Map(dest => dest.Brand, src => src.Brand.Name)
+            .Map(dest => dest.Category, src => src.Category.Name);
+        
+        
 
 
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
@@ -155,6 +163,7 @@ public static class ApplicationServicesExtension
 
 
     }
+    
     
 
 }

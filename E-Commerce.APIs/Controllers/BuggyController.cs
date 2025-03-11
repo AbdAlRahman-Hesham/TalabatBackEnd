@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace E_Commerce.APIs.Controllers;
-[ApiExplorerSettings(IgnoreApi = true)]
+//[ApiExplorerSettings(IgnoreApi = true)]
 
 public class BuggyController(StoreContext context) : BaseApiController
 {

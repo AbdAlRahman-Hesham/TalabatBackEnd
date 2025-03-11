@@ -9,30 +9,35 @@ using Mapster;
 namespace E_Commerce.APIs.Controllers;
 
 
-public class BasketController(IBasketRepository basketRepository) : BaseApiController
+public class BasketController : BaseApiController
 {
-    private readonly IBasketRepository _basketRepository = basketRepository;
+    private readonly IBasketRepository _basketRepository;
+
+    public BasketController(IBasketRepository basketRepository)
+    {
+        _basketRepository = basketRepository;
+    }
 
     [HttpGet]
-    public async Task<ActionResult<UserBasket>> GetBasket(string id)
+    public async Task<ActionResult<UserBasketDto>> GetBasket(string id)
     {
         var basket = await _basketRepository.GetBasketAsync(id);
-        return Ok(basket ?? new UserBasket(id));
+        return Ok((basket.Adapt<UserBasketDto>() ?? new UserBasket(id).Adapt<UserBasketDto>()));
     }
+
     [HttpPost]
-    public async Task<ActionResult<UserBasket>> UpdateBasket(UserBasketDto userBasketDto)
+    public async Task<ActionResult<UserBasketDto>> UpdateBasket(UserBasketDto userBasketDto)
     {
         var userBasket = userBasketDto.Adapt<UserBasket>();
         var basket = await _basketRepository.UpdateBasketAsync(userBasket);
-        if (basket == null) return BadRequest(new ApiResponse(400,"Problem updating the basket"));
-        return Ok(basket);
+        if (basket == null) return BadRequest(new ApiResponse(400, "Problem updating the basket"));
+        return Ok(basket.Adapt<UserBasketDto>());
     }
+
     [HttpDelete]
     public async Task<ActionResult<bool>> DeleteBasket(string id)
     {
         var result = await _basketRepository.DeleteBasketAsync(id);
         return Ok(result);
     }
-
-     
 }

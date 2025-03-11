@@ -92,6 +92,9 @@ public class PaymentServices(IUnitOfWork unitOfWork,IBasketRepository basketRepo
         else
             order.Status = OrderStatus.PaymentFailed;
 
+        _unitOfWork.Repository<Order>().Update(order);
+        await _unitOfWork.CompleteAsync();
+
         return order;
     }
 }

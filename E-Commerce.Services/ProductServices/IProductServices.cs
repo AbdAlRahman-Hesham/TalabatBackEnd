@@ -15,9 +15,13 @@ public interface IProductServices
 
     public Task<Pagination<Product>> GetProductsWithPaginationAsync(ProductSpecParams productSpec);
 
+    public Task<ICollection<Product>> GetFeaturedProductsAsync();
 
 
     public Task<Product?> GetProductAsync(int id);
+    Task<Product?> CreateProductAsync(Product product);
+    Task<bool> UpdateProductAsync(Product product);
+    Task<bool> DeleteProductAsync(int id);
 
 
 }
