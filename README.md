@@ -132,7 +132,7 @@ The Unit of Work pattern ensures transaction integrity when working with multipl
 ### Running the Application
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/e-commerce-api.git
+git clone https://github.com/AbdAlRahman-Hesham/TalabatBackEnd.git
 
 # Navigate to the API project
 cd e-commerce-api/E-Commerce.APIs
@@ -209,17 +209,6 @@ dotnet run
 - `ApiResponse` - Standard API response
 - `ApiValidationResponse` - Validation error response
 
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## License
 
